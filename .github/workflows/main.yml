@@ -7,21 +7,25 @@ jobs:
   run:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python
-      uses: actions/setup-python@v3
-    - uses: yaananth/run-notebook@v2
-      env:
-        RUNNER: ${{ toJson(runner) }}
-        SECRETS: ${{ toJson(secrets) }}
-        GITHUB: ${{ toJson(github) }}
-      with:
-        notebook: "dicoding_submission_ml.ipynb"
-        isReport: True
-    - uses: actions/upload-artifact@v3
-      if: always()
-      with:
-        name: output
-        path: ${{ RUNNER.temp }}/nb-runner
-      env:
-        RUNNER: ${{ toJson(runner) }}
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - uses: yaananth/run-notebook@v2
+        env:
+          RUNNER: ${{ toJson(runner) }}
+          SECRETS: ${{ toJson(secrets) }}
+          GITHUB: ${{ toJson(github) }}
+        with:
+          notebook: 'dicoding_submission_ml.ipynb'
+          isReport: True
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: output
+          path: ${{ RUNNER.temp }}/nb-runner
+        env:
+          RUNNER: ${{ toJson(runner) }}
